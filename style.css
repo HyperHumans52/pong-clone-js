@@ -1,0 +1,17 @@
+body {
+    margin: 0;
+    overflow: hidden; /* Prevents scrollbars if canvas exceeds viewport */
+    background-color: #333;
+}
+h1 {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #fff;
+    text-align: center;
+    margin: 4px 0;
+}
+canvas {
+    background-color: #000;
+    display: block; /* Removes extra space below canvas */
+    margin: 0 auto; /* Centers the canvas */
+    border: solid 1px #000;
+}
