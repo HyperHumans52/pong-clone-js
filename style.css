@@ -13,5 +13,5 @@ canvas {
     background-color: #000;
     display: block; /* Removes extra space below canvas */
     margin: 0 auto; /* Centers the canvas */
-    border: solid 1px #000;
+    border: solid 2px #666;
 }
