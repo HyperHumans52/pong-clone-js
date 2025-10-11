@@ -15,7 +15,18 @@ let ball = { x: canvas.width / 2, y: canvas.height / 2, dx: ballSpeed, dy: ballS
 let player1Score = 0;
 let player2Score = 0;
 
+const keys = {}; // Object to store pressed keys
+document.addEventListener('keydown', (e) => {
+    keys[e.key] = true;
+});
+document.addEventListener('keyup', (e) => {
+    delete keys[e.key];
+});
+
 function drawGame() {
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     // Draw net
     ctx.setLineDash([10, 10]);
     ctx.beginPath();
@@ -41,4 +52,28 @@ function drawGame() {
     ctx.fillText(player2Score, canvas.width / 2 + 40, 100);
 }
 
-drawGame();
+function updateGame() {
+    // Player 1 movement
+    if ('w' in keys && player1.y > 0) {
+        player1.y -= paddleSpeed;
+    }
+    if ('s' in keys && player1.y < canvas.height - paddleHeight) {
+        player1.y += paddleSpeed;
+    }
+    // Player 2 movement
+    if ('ArrowUp' in keys && player2.y > 0) {
+        player2.y -= paddleSpeed;
+    }
+    if ('ArrowDown' in keys && player2.y < canvas.height - paddleHeight) {
+        player2.y += paddleSpeed;
+    }
+}
+
+drawGame(); // Initial draw
+
+function gameLoop() {
+    updateGame(); // Update game logic (player movement, collisions, etc.)
+    drawGame(); // Redraw elements on the canvas
+    requestAnimationFrame(gameLoop); // Schedule next frame
+}
+gameLoop(); // Start the game
