@@ -67,6 +67,15 @@ function updateGame() {
     if ('ArrowDown' in keys && player2.y < canvas.height - paddleHeight) {
         player2.y += paddleSpeed;
     }
+
+    // Ball movement
+    ball.x += ball.dx;
+    ball.y += ball.dy;
+
+    // Check for collision with top or bottom wall
+    if (ball.y - ballSize / 2 < 0 || ball.y + ballSize / 2 > canvas.height) {
+        ball.dy = -ball.dy;
+    }
 }
 
 drawGame(); // Initial draw
