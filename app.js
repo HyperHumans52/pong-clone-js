@@ -76,6 +76,28 @@ function updateGame() {
     if (ball.y - ballSize / 2 < 0 || ball.y + ballSize / 2 > canvas.height) {
         ball.dy = -ball.dy;
     }
+
+    // Check for collision with player 1
+    if (
+        ball.x - ballSize / 2 < player1.x + paddleWidth &&
+        ball.x + ballSize / 2 > player1.x &&
+        ball.y + ballSize / 2 > player1.y &&
+        ball.y - ballSize / 2 < player1.y + paddleHeight
+    ) {
+        ball.x = player1.x + paddleWidth + ballSize / 2;
+        ball.dx = -ball.dx;
+    }
+
+    // Check for collision with player 2
+    if (
+        ball.x + ballSize / 2 > player2.x &&
+        ball.x - ballSize / 2 < player2.x + paddleWidth &&
+        ball.y + ballSize / 2 > player2.y &&
+        ball.y - ballSize / 2 < player2.y + paddleHeight
+    ) {
+        ball.x = player2.x - ballSize / 2;
+        ball.dx = -ball.dx;
+    }
 }
 
 drawGame(); // Initial draw
