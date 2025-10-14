@@ -7,13 +7,14 @@ const paddleSpeed = 5; // Vertical speed (pixels per frame)
 const goalPadding = 30; // Space between goal and paddle
 const ballSize = 10; // Width and height of the ball
 const ballSpeed = 5; // Velocity of the ball (pixels per frame)
-const winningScore = 10;
+const winningScore = 2;
 
 let player1 = { x: goalPadding, y: canvas.height / 2 - paddleHeight / 2 }; // Starting position of player 1
 let player2 = { x: canvas.width - (goalPadding + paddleWidth), y: canvas.height / 2 - paddleHeight / 2 }; // Starting position of player 2
 let ball = { x: canvas.width / 2, y: canvas.height / 2, dx: ballSpeed, dy: ballSpeed }; // Starting position and velocity of the ball
 let player1Score = 0;
 let player2Score = 0;
+let gameRunning = true;
 
 const keys = {}; // Object to store pressed keys
 document.addEventListener('keydown', (e) => {
@@ -50,6 +51,13 @@ function drawGame() {
     ctx.font = '72px Courier New';
     ctx.fillText(player1Score, canvas.width / 2 - (player1Score < 10 ? 80 : 120), 100); // Adjust position for single-digit scores
     ctx.fillText(player2Score, canvas.width / 2 + 40, 100);
+
+    // Check if game is over and display "Game Over" message
+    if (!gameRunning) {
+        ctx.fillStyle = '#fff';
+        ctx.font = '72px Courier New';
+        ctx.fillText('Game Over', canvas.width / 2 - 195, canvas.height / 2);
+    }
 }
 
 function updateGame() {
@@ -98,11 +106,40 @@ function updateGame() {
         ball.x = player2.x - ballSize / 2;
         ball.dx = -ball.dx;
     }
+
+    // Check for collision with left or right wall and update score
+    if (ball.x < 0) {
+        updateScore(2);
+    } else if (ball.x > canvas.width) {
+        updateScore(1);
+    }
+
+    // Check score for game over
+    if (player1Score >= winningScore || player2Score >= winningScore) {
+        // Stop the game loop
+        gameRunning = false;
+    }
+}
+
+function updateScore(player) {
+    if (player === 1) player1Score++;
+    else player2Score++;
+    resetBall(player === 1 ? 2 : 1);
+}
+
+function resetBall(player) {
+    // Reset position
+    ball.x = canvas.width / 2;
+    ball.y = Math.random() * canvas.height;
+    // Reset velocity
+    ball.dx = player === 1 ? -ballSpeed : ballSpeed;
+    ball.dy = ballSpeed * (Math.random() < 0.5 ? -1 : 1);
 }
 
 drawGame(); // Initial draw
 
 function gameLoop() {
+    if (!gameRunning) return;
     updateGame(); // Update game logic (player movement, collisions, etc.)
     drawGame(); // Redraw elements on the canvas
     requestAnimationFrame(gameLoop); // Schedule next frame
