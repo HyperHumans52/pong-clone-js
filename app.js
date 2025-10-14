@@ -18,7 +18,13 @@ let gameRunning = true;
 
 const keys = {}; // Object to store pressed keys
 document.addEventListener('keydown', (e) => {
-    keys[e.key] = true;
+    if (gameRunning) {
+        keys[e.key] = true;
+    } else {
+        resetGame();
+        gameRunning = true;
+        gameLoop();
+    }
 });
 document.addEventListener('keyup', (e) => {
     delete keys[e.key];
@@ -57,6 +63,8 @@ function drawGame() {
         ctx.fillStyle = '#fff';
         ctx.font = '72px Courier New';
         ctx.fillText('Game Over', canvas.width / 2 - 195, canvas.height / 2);
+        ctx.font = '24px Courier New';
+        ctx.fillText('Press any key to restart', canvas.width / 2 - 170, canvas.height / 2 + 36);
     }
 }
 
@@ -134,6 +142,16 @@ function resetBall(player) {
     // Reset velocity
     ball.dx = player === 1 ? -ballSpeed : ballSpeed;
     ball.dy = ballSpeed * (Math.random() < 0.5 ? -1 : 1);
+}
+
+function resetGame() {
+    // Reset scores
+    player1Score = 0;
+    player2Score = 0;
+    // Reset paddle positions
+    player1.y = canvas.height / 2 - paddleHeight / 2;
+    player2.y = canvas.height / 2 - paddleHeight / 2;
+    resetBall();
 }
 
 drawGame(); // Initial draw
