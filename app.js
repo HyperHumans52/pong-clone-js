@@ -76,13 +76,15 @@ function updateGame() {
     if ('s' in keys && player1.y < canvas.height - paddleHeight) {
         player1.y += paddleSpeed;
     }
+    //aiPlayerControl(player1);
     // Player 2 movement
-    if ('ArrowUp' in keys && player2.y > 0) {
-        player2.y -= paddleSpeed;
-    }
-    if ('ArrowDown' in keys && player2.y < canvas.height - paddleHeight) {
-        player2.y += paddleSpeed;
-    }
+    // if ('ArrowUp' in keys && player2.y > 0) {
+    //     player2.y -= paddleSpeed;
+    // }
+    // if ('ArrowDown' in keys && player2.y < canvas.height - paddleHeight) {
+    //     player2.y += paddleSpeed;
+    // }
+    aiPlayerControl(player2);
 
     // Ball movement
     ball.x += ball.dx;
@@ -152,6 +154,28 @@ function resetGame() {
     player1.y = canvas.height / 2 - paddleHeight / 2;
     player2.y = canvas.height / 2 - paddleHeight / 2;
     resetBall();
+}
+
+function aiPlayerControl(player) {
+    const paddleCenter = player.y + paddleHeight / 2;
+    // Check if ball is moving towards player on the right side of the canvas
+    if (
+        (ball.x > canvas.width / 2 && ball.dx > 0 && player.x > canvas.width / 2) ||
+        (ball.x < canvas.width / 2 && ball.dx < 0 && player.x < canvas.width / 2)
+    ) {
+        // Move player to follow the ball
+        if (paddleCenter < ball.y) {
+            player.y += paddleSpeed;
+        } else if (paddleCenter > ball.y) {
+            player.y -= paddleSpeed;
+        }
+        // Prevent player from going off the canvas
+        if (player.y < 0) {
+            player.y = 0;
+        } else if (player.y + paddleHeight > canvas.height) {
+            player.y = canvas.height - paddleHeight;
+        }
+    }
 }
 
 drawGame(); // Initial draw
