@@ -70,13 +70,13 @@ function drawGame() {
 
 function updateGame() {
     // Player 1 movement
-    if ('w' in keys && player1.y > 0) {
-        player1.y -= paddleSpeed;
-    }
-    if ('s' in keys && player1.y < canvas.height - paddleHeight) {
-        player1.y += paddleSpeed;
-    }
-    //aiPlayerControl(player1);
+    // if ('w' in keys && player1.y > 0) {
+    //     player1.y -= paddleSpeed;
+    // }
+    // if ('s' in keys && player1.y < canvas.height - paddleHeight) {
+    //     player1.y += paddleSpeed;
+    // }
+    aiPlayerControl(player1);
     // Player 2 movement
     // if ('ArrowUp' in keys && player2.y > 0) {
     //     player2.y -= paddleSpeed;
@@ -102,8 +102,7 @@ function updateGame() {
         ball.y + ballSize / 2 > player1.y &&
         ball.y - ballSize / 2 < player1.y + paddleHeight
     ) {
-        ball.x = player1.x + paddleWidth + ballSize / 2;
-        ball.dx = -ball.dx;
+        handleCollision(player1);
     }
 
     // Check for collision with player 2
@@ -113,8 +112,7 @@ function updateGame() {
         ball.y + ballSize / 2 > player2.y &&
         ball.y - ballSize / 2 < player2.y + paddleHeight
     ) {
-        ball.x = player2.x - ballSize / 2;
-        ball.dx = -ball.dx;
+        handleCollision(player2);
     }
 
     // Check for collision with left or right wall and update score
@@ -129,6 +127,14 @@ function updateGame() {
         // Stop the game loop
         gameRunning = false;
     }
+}
+
+function handleCollision(player) {
+    const paddleCenter = player.y + paddleHeight / 2;
+    const distanceFromCenter = paddleCenter - ball.y;
+    ball.x = player.x < canvas.width / 2 ? player1.x + paddleWidth + ballSize / 2 : player.x - ballSize / 2; // Reposition the ball to the right of the paddle to avoid trapping the ball in the paddle
+    ball.dx = -ball.dx;
+    ball.dy -= 0.1 * distanceFromCenter; // Adjust the ball's velocity based on the distance from the paddle's center
 }
 
 function updateScore(player) {
